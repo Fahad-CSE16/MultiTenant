@@ -7,8 +7,12 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name = "base.html")),
+    # path('', TemplateView.as_view(template_name = "base.html")),
     path('__debug__/', include(debug_toolbar.urls)),
+
+
+
+    path('', include("organizations.urls")),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL,
