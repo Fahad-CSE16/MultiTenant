@@ -22,3 +22,4 @@ django-model-utils
 django-simpleui
 django-material-admin
 whitenoise
+django-tenant-schemas

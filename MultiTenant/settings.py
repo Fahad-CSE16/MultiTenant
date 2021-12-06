@@ -2,15 +2,28 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '=)-hf@n9n!%cyer^kxoj7gs(qh*!v!38f(h(llcx=+r68=_6!o'
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 from datetime import timedelta
+SHARED_APPS = (
+    'tenant_schemas',  # mandatory, should always be before any django app
+    'organizations', # you must list the app where your tenant model resides in
+    'locations',
+    'django.contrib.contenttypes',
+)
 
+TENANT_APPS = (
+    'django.contrib.contenttypes',
+    # your tenant-specific apps
+    'drivers',
+    'shipments',
+)
 
 # Application definition
 LOCAL_APPS = [
-
+    'locations',
+    'drivers',
+    'shipments',
 ]
-
 THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
@@ -25,6 +38,8 @@ THIRD_PARTY_APPS = [
 ]
 
 DEFAULT_APPS = [
+    'tenant_schemas', # mandatory, should always be before any django app
+    'organizations',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,7 +55,7 @@ INTERNAL_IPS = [
     # ...
 ]
 INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + LOCAL_APPS
-
+DEFAULT_FILE_STORAGE='tenant_schemas.storage.TenantFileSystemStorage'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -56,6 +71,9 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    'tenant_schemas.middleware.TenantMiddleware',
+    'tenant_schemas.middleware.SuspiciousTenantMiddleware',
+    'tenant_schemas.middleware.DefaultTenantMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -68,7 +86,7 @@ MIDDLEWARE = [
 
 ]
 ROOT_URLCONF = 'MultiTenant.urls'
-
+PG_EXTRA_SEARCH_PATHS = ['extensions',]
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -100,25 +118,27 @@ WSGI_APPLICATION = 'MultiTenant.wsgi.application'
 #         },
 #     },
 # }
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'USER': 'postgres',
-#         'PASSWORD':'postgres',
-#         'NAME': 'postgres',
-#         'HOST': 'db', # for docker
-#         # 'HOST': 'localhost', # fow without docker
-#         'PORT': 5432
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
-
+TENANT_MODEL = "organizations.Organization"
+DATABASES = {
+    'default': {
+        'ENGINE': 'tenant_schemas.postgresql_backend',
+        'USER': 'postgres',
+        'PASSWORD':'postgres',
+        'NAME': 'multitenant',
+        # 'HOST': 'db', # for docker
+        'HOST': 'localhost', # fow without docker
+        'PORT': 5432
+    }
+}
+DATABASE_ROUTERS = (
+    'tenant_schemas.routers.TenantSyncRouter',
+)
 STATICFILES_STORAGE='whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 AUTH_PASSWORD_VALIDATORS = [
