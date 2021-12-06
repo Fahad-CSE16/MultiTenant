@@ -11,9 +11,5 @@ class Organization(TenantMixin):
     # default true, schema will be automatically created and synced when it is saved
     auto_create_schema = True
 
-# tenant = Organization(domain_url='example.com', # don't add your port or www here! on a local server you'll want to use localhost here
-#                 schema_name='public',
-#                 name='Schemas Inc.',
-#                 paid_until='2016-12-05',
-#                 on_trial=False)
+# tenant = Organization(domain_url='example.com',schema_name='public',name='Schemas Inc.',on_trial=False)
 # tenant.save()
