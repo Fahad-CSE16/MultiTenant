@@ -1,4 +1,4 @@
-# BasicProjectOnly
+# MultiTenant
 
 1. **Teams**
    - *FrontEnd (React.js)*
