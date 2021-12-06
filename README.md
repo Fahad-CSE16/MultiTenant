@@ -1,5 +1,24 @@
 # MultiTenant
 
+### Execute 
+
+```
+Organization.objects.create(domain_url='localhost',schema_name='public',name='Your Name',on_trial=False)
+```
+then 
+```
+Organization.objects.create(domain_url='fahad.localhost',schema_name='fahad',name='fahad',on_trial=False)
+```
+
+# Remember: Never Run Migrate Commant First, instead use `migrate_schemas` 
+
+```
+python manage.py migrate_schemas --shared
+python manage.py migrate_schemas 
+```
+
+
+
 1. **Teams**
    - *FrontEnd (React.js)*
      - [Md Fahad Hossain](https://www.facebook.com/fahad.cse16)
