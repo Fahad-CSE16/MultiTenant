@@ -1,9 +1,7 @@
-from django.db.models import query
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
-from rest_framework.decorators import permission_classes
 from drivers.models import Driver
-from organizations.serializers import DriverSerializer
+from .serializers import DriverSerializer
 
 # Create your views here.
 def homeview(request):

@@ -11,6 +11,7 @@ SHARED_APPS = (
     'organizations', # you must list the app where your tenant model resides in
     'locations',
     'django.contrib.contenttypes',
+    
 )
 
 TENANT_APPS = (
